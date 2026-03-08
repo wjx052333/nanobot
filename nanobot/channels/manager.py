@@ -160,6 +160,16 @@ class ChannelManager:
                 logger.info("WeCom channel enabled")
             except ImportError as e:
                 logger.warning("WeCom channel not available: {}", e)
+        # Unix Domain Socket channel
+        if self.config.channels.uds.enabled:
+            from nanobot.channels.uds import UdsChannel
+            self.channels["uds"] = UdsChannel(
+                self.config.channels.uds, self.bus
+            )
+            logger.info(
+                "UDS channel enabled on {}",
+                self.config.channels.uds.socket_path,
+            )
 
         self._validate_allow_from()
 

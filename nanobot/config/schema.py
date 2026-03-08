@@ -210,6 +210,14 @@ class WecomConfig(Base):
     welcome_message: str = ""  # Welcome message for enter_chat event
 
 
+class UdsConfig(Base):
+    """Unix Domain Socket channel configuration."""
+
+    enabled: bool = False
+    socket_path: str = "/tmp/nanobot_uds.sock"
+    allow_from: list[str] = Field(default_factory=lambda: ["*"])
+
+
 class ChannelsConfig(Base):
     """Configuration for chat channels."""
 
@@ -226,6 +234,7 @@ class ChannelsConfig(Base):
     qq: QQConfig = Field(default_factory=QQConfig)
     matrix: MatrixConfig = Field(default_factory=MatrixConfig)
     wecom: WecomConfig = Field(default_factory=WecomConfig)
+    uds: UdsConfig = Field(default_factory=UdsConfig)
 
 
 class AgentDefaults(Base):
