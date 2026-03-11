@@ -228,7 +228,8 @@ class MqttConfig(Base):
     password: str = ""
     client_id: str = "nanobot"
     subscribe_topic: str = "nanobot/inbound"  # Topic to receive messages from
-    publish_topic: str = "nanobot/outbound"   # Topic to publish replies to
+    publish_topic: str = "openclaw/inbound"   # Topic to publish replies to
+    per_device_reply: bool = False  # If true, replies go to {publish_topic}/{chat_id}
     qos: int = 1
     allow_from: list[str] = Field(default_factory=lambda: ["*"])
 

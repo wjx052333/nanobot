@@ -107,6 +107,34 @@ async def test_send_publishes_to_broker() -> None:
 
 
 @pytest.mark.asyncio
+async def test_send_per_device_reply_uses_chat_id_suffix() -> None:
+    cfg = MqttConfig(enabled=True, publish_topic="nanobot/outbound", per_device_reply=True)
+    bus = MagicMock(spec=MessageBus)
+    channel = MqttChannel(cfg, bus)
+    channel._client = AsyncMock()
+
+    msg = OutboundMessage(channel="mqtt", chat_id="camera_01", content="ok")
+    await channel.send(msg)
+
+    call_args = channel._client.publish.call_args
+    assert call_args[0][0] == "nanobot/outbound/camera_01"
+
+
+@pytest.mark.asyncio
+async def test_send_default_uses_single_topic() -> None:
+    cfg = MqttConfig(enabled=True, publish_topic="nanobot/outbound", per_device_reply=False)
+    bus = MagicMock(spec=MessageBus)
+    channel = MqttChannel(cfg, bus)
+    channel._client = AsyncMock()
+
+    msg = OutboundMessage(channel="mqtt", chat_id="camera_01", content="ok")
+    await channel.send(msg)
+
+    call_args = channel._client.publish.call_args
+    assert call_args[0][0] == "nanobot/outbound"
+
+
+@pytest.mark.asyncio
 async def test_send_drops_when_not_connected() -> None:
     channel = _make_channel()
     channel._client = None  # not connected

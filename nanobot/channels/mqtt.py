@@ -84,16 +84,21 @@ class MqttChannel(BaseChannel):
             return
 
         try:
+            topic = (
+                f"{self.config.publish_topic}/{msg.chat_id}"
+                if self.config.per_device_reply
+                else self.config.publish_topic
+            )
             payload = json.dumps(
                 {"chat_id": msg.chat_id, "content": msg.content},
                 ensure_ascii=False,
             )
             await self._client.publish(
-                self.config.publish_topic,
+                topic,
                 payload=payload.encode(),
                 qos=self.config.qos,
             )
-            logger.debug("MQTT → [{}]: {}", msg.chat_id, msg.content[:80])
+            logger.debug("MQTT → [{}]: {}", topic, msg.content[:80])
         except Exception as exc:
             logger.error("MQTT: failed to publish reply: {}", exc)
 
