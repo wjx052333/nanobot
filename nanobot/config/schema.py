@@ -218,6 +218,21 @@ class UdsConfig(Base):
     allow_from: list[str] = Field(default_factory=lambda: ["*"])
 
 
+class MqttConfig(Base):
+    """MQTT channel configuration."""
+
+    enabled: bool = False
+    broker_host: str = "localhost"
+    broker_port: int = 1883
+    username: str = ""
+    password: str = ""
+    client_id: str = "nanobot"
+    subscribe_topic: str = "nanobot/inbound"  # Topic to receive messages from
+    publish_topic: str = "nanobot/outbound"   # Topic to publish replies to
+    qos: int = 1
+    allow_from: list[str] = Field(default_factory=lambda: ["*"])
+
+
 class ChannelsConfig(Base):
     """Configuration for chat channels."""
 
@@ -235,6 +250,7 @@ class ChannelsConfig(Base):
     matrix: MatrixConfig = Field(default_factory=MatrixConfig)
     wecom: WecomConfig = Field(default_factory=WecomConfig)
     uds: UdsConfig = Field(default_factory=UdsConfig)
+    mqtt: MqttConfig = Field(default_factory=MqttConfig)
 
 
 class AgentDefaults(Base):

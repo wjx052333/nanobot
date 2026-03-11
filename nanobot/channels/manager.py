@@ -171,6 +171,21 @@ class ChannelManager:
                 self.config.channels.uds.socket_path,
             )
 
+        # MQTT channel
+        if self.config.channels.mqtt.enabled:
+            try:
+                from nanobot.channels.mqtt import MqttChannel
+                self.channels["mqtt"] = MqttChannel(
+                    self.config.channels.mqtt, self.bus
+                )
+                logger.info(
+                    "MQTT channel enabled ({}:{})",
+                    self.config.channels.mqtt.broker_host,
+                    self.config.channels.mqtt.broker_port,
+                )
+            except ImportError as e:
+                logger.warning("MQTT channel not available: {}", e)
+
         self._validate_allow_from()
 
     def _validate_allow_from(self) -> None:
